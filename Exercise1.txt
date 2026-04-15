@@ -1,0 +1,50 @@
+Exercise 1.1: Safety vs. Security:
+
+Safety is concerned with failures without malicious intent such as errors, uncertainty, edge cases, etc.
+Example: An autonomous vehicle misjudges the speed of an oncoming car while making a left turn at an intersection which therefore results in collision.
+
+Security is concerned with malicious actors exploiting the system such as adversarial behavior, manipulation, hacking.
+Example: An attacker uses a laser or radio signal to spoof the vehicle’s sensors (e.g., LiDAR or radar), making the system detect a fake obstacle which leads the vehicle to suddenly brake.
+
+Exercise 1.2: The EU AI Act:
+
+1. The risk categories in EU AI Act are:
+a) Unacceptable Risk (Prohibited) - These risks involve those that violate fundamental rights and are banned outright.
+Example: AI exploiting vulnerabilities of specific groups, AI systems that manipulate human behavior subconsciously
+b)  High Risk - These risks can significantly impact safety or fundamental rights. They are allowed, but heavily regulated
+Example: Biometric identification systems, AI controlling critical infrastructure
+c)  Limited Risk - Risks which involve transparency obligations only.Users must be aware they are interacting with AI
+Example: AI-powered customer service bots, AI-based recommendation systems with interaction
+d) Minimal (or No) Risk - Almost no regulation
+Example: AI-based autocorrect and grammar checkers, Image enhancement tools
+
+2. a) The perception model of autonomous vehicles falls under high risk as it directly affects physical safety of humans and it is part of a safety-critical system (transportation). The Errors can lead to injury or death.
+   b) A chatbot is classified as limited risk as it interacts with users but does not directly control physical systems. The main risk is misleading or deceiving users.The users must be informed they are interacting with AI.
+
+3. For high-risk systems, the Act imposes strict obligations like risk management, high-quality data governance, transparency, human oversight, and conformity assessment to ensure safety, reliability, and accountability throughout the lifecycle of the model.
+
+Exercise 1.3: Build the Right Model vs. Build the Model Right:
+
+Build the right model - The model is trained to detect only adults, but not children, people in wheelchairs and people partially occluded.
+Build the model right - The model works well in training conditions but fails when there is glare from sunlight, pedestrians wear unusual clothing and sensors have slight noise
+
+Exercise 1.4: First Impressions
+
+1. Situations in which I dont trust the model are:
+i) Night-time driving - The model has never seen low-light conditions, the visual features (contrast, color, shadows) change drastically resulting in the  pedestrians or traffic lights becoming invisible to the model.
+ii) Water droplets, reflections, fog blur degrade image quality resulting in distribution shift from training data resulting in false negatives.
+iii) Complex urban scenes (occlusion / crowding) result in multiple overlapping objects. Pedestrians partially hidden behind vehicles
+
+2. I consider 'Pedestrian present' the most safety critical because missing a pedestrian will lead to direct risk to human life. There will be no physical protection so this results to highest vulnerability and the reaction time is minimal.
+
+3. Before deploying a model in a vehicle i would require the Performance metrics across conditions (night, adverse weather conditions, etc), how the autopilots react to false positives and false negatives and if the model has been tested in real world , ie, outside simulation.
+
+Exercise 1.5: 
+
+Testing and validation: Shows the model actually works under defined conditions.
+Explainability: Shows the model is using relevant features, not shortcuts.
+Uncertainty estimation: Shows the model knows when it might be wrong.
+Anomaly detection: Detects inputs outside training distribution.
+Adversarial machine learning: Shows resistance to intentional manipulation.
+Alignment: Ensures model outputs lead to safe decisions.
+
