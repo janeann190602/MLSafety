@@ -25,7 +25,7 @@ Example: AI-based autocorrect and grammar checkers, Image enhancement tools
 
 Exercise 1.3: Build the Right Model vs. Build the Model Right:
 
-Build the right model - The model is trained to detect only adults, but not children, people in wheelchairs and people partially occluded.
+Build the right model - The model is trained only with pedestrian data, vehicle data and fail to add data on traffic lights then the model will fail to follow the traffic signals.
 Build the model right - The model works well in training conditions but fails when there is glare from sunlight, pedestrians wear unusual clothing and sensors have slight noise
 
 Exercise 1.4: First Impressions
