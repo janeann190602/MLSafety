@@ -1,0 +1,109 @@
+Exercise 2.1: Safety Vocabulary:
+
+Loss: An unacceptable outcome involving harm to people, property, or the environment.  
+Example: A collision with a pedestrian causing injury.
+
+Hazard: A system state that, under worst-case environmental conditions, can lead to a loss.  
+Example: The vehicle is moving at high speed while a pedestrian is in its direct path.
+
+Risk: The combination of the likelihood of a hazard occurring and the severity of the resulting loss.  
+Example: A "High Risk" scenario is a vehicle driving at 50 km/h in a crowded school zone with faulty brakes.
+
+Exercise 2.2: ODD Specification:
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Dimension     | Operating Conditions        | Non-Operating Conditions                 | Runtime Detection
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+Weather       | Clear, light rain           | Heavy snow, thick fog                    | Confidence scores from perception; raindrop detection on lens
+Lighting      | Daylight, well-lit tunnels  | Pitch black (unlit roads), extreme glare | Ambient light sensor; image histogram analysis (underexposure)
+Camera        | Clean lens, calibrated      | Obscured (mud/ice), misaligned           | Blindness detection algorithms (blocked pixels)
+Scene Type    | Urban streets, marked lanes | Off-road, unmarked construction zones    | Lane detection failure; GPS/Map mismatches
+Vehicle Speed | 0−50 km/h                   | >50 km/h                                 | Speedometer (CAN bus) feedback.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Exercise 2.3: Losses: 
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+ID  | Loss Description                               | Why Unacceptable
+-------------------------------------------------------------------------------------------------------------------------------------------------
+L-1 | Death or injury to persons                     | Protection of human life is the primary safety constraint and a legal/ethical requirement 
+L-2 | Damage to the ego-vehicle or external objects  | Leads to high financial costs, liability issues, and loss of mission capability
+L-3 | Damage to the environment                      | Results in environmental harm or public utility disruption
+L-4 | Loss of mission/transportation                 | The system fails to provide its intended utility to the user
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Exercise 2.4: Hazards:
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+ID  | Hazard                                                                                             | Loss(es)       | Likelihood | Severity
+-------------------------------------------------------------------------------------------------------------------------------------------------
+H-1 | Vehicle does not maintain a safe distance from other vehicles or obstacles                         | L-1, L-2       | Medium     | High      
+H-2 | Vehicle enters a state where it violates traffic laws                                              | L-1, L-2       | Low        | High 
+H-3 | Vehicle operates outside of its defined Operational Design Domain (ODD) without safe degradation   | L-1, L-2, L-3  | Medium     | High           
+H-4 | Inadequate or confusing transition of control between the autonomous system and the human operator | L-1, L-2       | Medium     | High 
+H-5 | Vehicle performs unintended or aggressive maneuvers                                                | L-2            | Low        | Medium
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Exercise 2.5: Control Structure Diagram:
+
+                    ┌──────────────────────┐
+                    │   Human Operator     │
+                    │  (High-level control)│
+                    └─────────┬────────────┘
+                              │  (route / override commands)
+                              ▼
+                    ┌──────────────────────┐
+                    │   Planning Module    │
+                    │   (Main Controller)  │
+                    └─────────┬────────────┘
+          (brake, throttle,   │
+           steering commands) │
+                              ▼
+                    ┌──────────────────────┐
+                    │      Actuators       │
+                    │ (Vehicle Control)    │
+                    └─────────┬────────────┘
+                              │
+                              ▼
+                    ┌──────────────────────┐
+                    │       Vehicle        │
+                    │   (Controlled Proc.) │
+                    └─────────┬────────────┘
+                              │
+         ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┼──────────────────────────────
+        (Feedback loop - dashed arrows below)
+                              │
+                              ▼
+                    ┌──────────────────────┐
+                    │        Camera        │
+                    └─────────┬────────────┘
+                              ▼
+                    ┌──────────────────────┐
+                    │  Perception Models   │
+                    │ (objects, lanes, TL) │
+                    └─────────┬────────────┘
+                              │ (perception labels)
+                              ▼
+                    ┌──────────────────────┐
+                    │   Distance Oracle    │
+                    │ (distance estimates) │
+                    └─────────┬────────────┘
+                              │
+                              ▼
+                    ┌──────────────────────┐
+                    │   Planning Module    │
+                    └──────────────────────┘
+
+Exercise 2.6: Unsafe Control Actions (UCAs): 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ID     | Controller         | Control Action       | UCA Type           | Hazard(s)     | Unsafe Scenario
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UCA-1  | Planning Module    | Brake                | Not provided       | H-1           | The planner fails to issue a brake command when a pedestrian is detected in the path.
+UCA-2  | Planning Module    | Accelerate           | Provided unsafely  | H-1, H-2      | The planner issues an acceleration command while a vehicle is stopped directly ahead.
+UCA-3  | Planning Module    | Steer                | Wrong timing       | H-1, H-5      | The planner initiates a lane change maneuver too late to avoid a stationary obstacle.
+UCA-4  | Human Operator     | Override/Takeover    | Not provided       | H-1, H-3      | The human fails to intervene when the system enters an ODD violation (e.g., heavy fog).
+UCA-5  | Human Operator     | Deactivate Autonomy  | Provided unsafely  | H-5           | The human deactivates the system during a high-speed curve without taking steering control.
+UCA-6  | Planning Module    | Brake                | Wrong duration     | H-5           | The planner applies full emergency braking but releases it before the vehicle has fully stopped.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
