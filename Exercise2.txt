@@ -96,14 +96,51 @@ Exercise 2.5: Control Structure Diagram:
 
 Exercise 2.6: Unsafe Control Actions (UCAs): 
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ID     | Controller         | Control Action       | UCA Type           | Hazard(s)     | Unsafe Scenario
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 UCA-1  | Planning Module    | Brake                | Not provided       | H-1           | The planner fails to issue a brake command when a pedestrian is detected in the path.
 UCA-2  | Planning Module    | Accelerate           | Provided unsafely  | H-1, H-2      | The planner issues an acceleration command while a vehicle is stopped directly ahead.
 UCA-3  | Planning Module    | Steer                | Wrong timing       | H-1, H-5      | The planner initiates a lane change maneuver too late to avoid a stationary obstacle.
 UCA-4  | Human Operator     | Override/Takeover    | Not provided       | H-1, H-3      | The human fails to intervene when the system enters an ODD violation (e.g., heavy fog).
 UCA-5  | Human Operator     | Deactivate Autonomy  | Provided unsafely  | H-5           | The human deactivates the system during a high-speed curve without taking steering control.
 UCA-6  | Planning Module    | Brake                | Wrong duration     | H-5           | The planner applies full emergency braking but releases it before the vehicle has fully stopped.
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Exercise 2.7: Safety Constraints:
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UCA   | Safety Constraint                                                                                                       | Level        | Verification
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UCA-1 | The Planning Module must receive a brake signal if the distance oracle/perception model identifies an object within 2m  | Model-level  | Performance testing of the distance oracle and perception labels.
+UCA-2 | The Planning Module must inhibit acceleration commands if the distance to the leading vehicle is decreasing below a safety threshold | Model-level | Evaluating the collision-avoidance logic against edge-case datasets.
+UCA-4 | The system must provide a clear, multimodal alert (visual/auditory) to the operator within 500ms of detecting an ODD violation | System-level | Human-in-the-loop simulation and latency testing of the notification pipeline.
+UCA-5 | The system must prevent deactivation of steering/braking control until it detects that the operator's hands are on the wheel and feet are on the pedals | System-level | Functional safety testing of pressure/capacitive sensors and driver monitoring logic.
+UCA-6 | Emergency braking must be sustained until the vehicle velocity reaches 0 km/h or the obstacle is no longer in the trajectory | Model-level | Verification of the Planner's state machine logic in diverse simulation scenarios.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Exercise 2.8: Causal Loss Scenarios:
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UCA    | Causal Scenario	                                                                   | Root Cause	                                    | Related Constraint
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UCA-1  | Perception model fails to detect a pedestrian in low-light/high-glare conditions | Incorrect Feedback: The model provides a "clear path" label despite an obstacle being present | Model-level: Robustness to lighting variations.  
+
+UCA-2  | The Planner receives a "0m" distance from the Distance Oracle but treats it as a sensor error and ignores it | Flawed Internal Model: The controller misinterprets valid sensor data as noise | Model-level: Collision-avoidance logic.  
+
+UCA-4  | The human operator is distracted by a mobile device and misses the takeover alert | Human Factor: Attention lapse leads to a failure to respond to a system-initiated handoff | System-level: Multimodal alerts and monitoring.  
+
+UCA-6  | A high-latency connection between the perception model and the planner causes the "obstacle cleared" signal to arrive late | Timing Delay: Stale information causes the controller to stop the safety action prematurely | Model-level: State machine timing verification.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Exercise 2.9: Mapping Constraints to Evidence:
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Safety Constraint           | Future Exercise Sheet for Evidence	| Type of Evidence/Metric  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+High Recall for Pedestrians | Sheet 4 (Testing I)	                | Precision, Recall, and F1-score specifically for the pedestrian classifier
+Robustness to Visual Noise  | Sheet 6 (Adversarial ML)	          | Recall values under FGSM (Fast Gradient Sign Method) attacks
+Confidence Calibration      | Sheet 7 (Uncertainty)	              | Expected Calibration Error (ECE) and results of temperature scaling
+Feature Attribution         |	Sheet 8 (Explainability)	          | GradCAM visualizations and overlap criterion evaluation
+ODD Detection               | Sheet 9 (Anomaly Detection)	        | AUROC for Maximum Softmax Probability (MSP) and energy scores on OOD data
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
