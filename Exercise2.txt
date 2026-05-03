@@ -135,6 +135,7 @@ UCA-6  | A high-latency connection between the perception model and the planner 
 
 Exercise 2.9: Mapping Constraints to Evidence:
 
+1. Model-Level Constraints:
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Safety Constraint           | Future Exercise Sheet for Evidence	| Type of Evidence/Metric  
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -143,4 +144,13 @@ Robustness to Visual Noise  | Sheet 6 (Adversarial ML)	          | Recall values
 Confidence Calibration      | Sheet 7 (Uncertainty)	              | Expected Calibration Error (ECE) and results of temperature scaling
 Feature Attribution         |	Sheet 8 (Explainability)	          | GradCAM visualizations and overlap criterion evaluation
 ODD Detection               | Sheet 9 (Anomaly Detection)	        | AUROC for Maximum Softmax Probability (MSP) and energy scores on OOD data
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2. System-Level Constraints:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Safety Constraint         | Evidence
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Human Handoff Reliability | Provide a human-factors analysis arguing that the current visual-only dashboard is sufficient, or identifying the "lack of auditory alerts" as a gap that requires a design change.
+Sensor Redundancy         | Since the system description notes "No sensor redundancy" (camera only), the evidence must acknowledge this as a high-risk design limitation that limits deployment to specific, low-complexity areas.
+Actuator Limits           | Verification of the drive-by-wire system's mechanical response time and maximum deceleration capacity through physical hardware testing logs (theoretical for this project).
+Operator Alertness        |	Evidence would include a safety protocol or "Operator Monitoring System" (OMS) verification to ensure the human hasn't succumbed to boredom or fatigue.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
